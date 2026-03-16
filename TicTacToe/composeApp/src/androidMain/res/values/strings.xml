@@ -1,0 +1,55 @@
+<resources>
+    <!-- App and screen titles -->
+    <string name="app_name">Tic-Tac-Toe</string>
+    <string name="title_welcome">Welcome</string>
+    <string name="title_game">Game</string>
+    <string name="title_game_over">Game Over</string>
+
+    <!-- Button labels -->
+    <string name="btn_start_game">Start Game</string>
+    <string name="btn_play_again">Play Again</string>
+
+    <!-- Player setup labels -->
+    <string name="label_player_one">Player 1</string>
+    <string name="label_player_two">Player 2</string>
+    <string name="hint_player_name">Enter player name</string>
+
+    <!-- Player types -->
+    <string name="type_human">Human</string>
+    <string name="type_easy_ai">Easy AI</string>
+    <string name="type_medium_ai">Medium AI</string>
+    <string name="type_hard_ai">Hard AI</string>
+
+    <!-- Snackbar messages -->
+    <string name="error_name_empty">Name cannot be empty</string>
+    <string name="error_cell_occupied">That cell is already occupied</string>
+    <string name="error_ai_thinking">Please wait for the AI to move</string>
+
+    <!-- Result messages and score labels -->
+    <string name="result_wins">%1$s wins!</string>
+    <string name="result_tie">It is a tie!</string>
+    <string name="label_wins">wins</string>
+    <string name="label_ties">Ties</string>
+
+    <!-- Content descriptions -->
+    <string name="cd_app_logo">Tic-Tac-Toe logo</string>
+    <string name="cd_back_button">Back</string>
+    <string name="cd_board_cell">Board cell</string>
+
+    <!-- Stage 2 stubs -->
+    <string name="stub_game_screen_coming">Game Screen Coming</string>
+
+    <!-- Fun default player names -->
+    <string-array name="fun_player_names">
+        <item>Nova</item>
+        <item>Atlas</item>
+        <item>Piper</item>
+        <item>Juno</item>
+        <item>Indigo</item>
+        <item>Rex</item>
+        <item>Zara</item>
+        <item>Echo</item>
+        <item>Lyra</item>
+        <item>Orion</item>
+    </string-array>
+</resources>
