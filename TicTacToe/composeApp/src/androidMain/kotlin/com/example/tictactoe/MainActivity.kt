@@ -4,13 +4,16 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.core.view.WindowCompat
 import androidx.navigation.compose.rememberNavController
 import com.example.tictactoe.navigation.AppNavigation
+import com.example.tictactoe.navigation.AppRoutes
 import com.example.tictactoe.scaffold.AppScaffold
 import com.example.tictactoe.ui.theme.TicTacToeTheme
 
@@ -42,11 +45,24 @@ fun TicTacToeApp() {
         AppScaffold(
             navController = navController,
             snackbarHostState = snackbarHostState,
-            onBackClick = { navController.popBackStack() }
+            onBackClick = {
+                when (navController.currentBackStackEntry?.destination?.route?.substringBefore('?')) {
+                    AppRoutes.ROUTE_GAME -> {
+                        navController.popBackStack()
+                    }
+                    AppRoutes.ROUTE_GAME_OVER -> {
+                        navController.previousBackStackEntry
+                            ?.savedStateHandle
+                            ?.set(AppRoutes.SAVED_STATE_NEW_ROUND, true)
+                        navController.popBackStack()
+                    }
+                }
+            }
         ) { padding ->
             AppNavigation(
                 navController = navController,
-                snackbarHostState = snackbarHostState
+                snackbarHostState = snackbarHostState,
+                modifier = Modifier.padding(padding)
             )
         }
     }

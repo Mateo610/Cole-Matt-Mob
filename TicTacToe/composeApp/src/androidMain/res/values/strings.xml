@@ -1,13 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <!-- App and screen titles -->
     <string name="app_name">Tic-Tac-Toe</string>
     <string name="title_welcome">Welcome</string>
-    <string name="title_game">Game</string>
-    <string name="title_game_over">Game Over</string>
+    <string name="title_game">Tic-Tac-Toe</string>
+    <string name="title_game_over">Tic-Tac-Toe</string>
 
     <!-- Button labels -->
-    <string name="btn_start_game">Start Game</string>
+    <string name="btn_start_game">Start!</string>
     <string name="btn_play_again">Play Again</string>
+    <string name="btn_start_new_game">Start New Game</string>
+
+    <!-- Welcome -->
+    <string name="welcome_title">Welcome to\nTic-Tac-Toe!</string>
+    <string name="hint_player_one_name">Player 1 Name</string>
+    <string name="hint_player_two_name">Player 2 Name</string>
 
     <!-- Player setup labels -->
     <string name="label_player_one">Player 1</string>
@@ -20,12 +27,25 @@
     <string name="type_medium_ai">Medium AI</string>
     <string name="type_hard_ai">Hard AI</string>
 
+    <!-- Game screen -->
+    <string name="game_turn_play_x">%1$s, play your X</string>
+    <string name="game_turn_play_o">%1$s, play your O</string>
+
     <!-- Snackbar messages -->
     <string name="error_name_empty">Name cannot be empty</string>
     <string name="error_cell_occupied">That cell is already occupied</string>
     <string name="error_ai_thinking">Please wait for the AI to move</string>
 
-    <!-- Result messages and score labels -->
+    <!-- Game over -->
+    <string name="result_headline_p1_won">🎉 Player 1 Won! 😃</string>
+    <string name="result_headline_p2_won">🎉 Player 2 Won! 😃</string>
+    <string name="result_headline_tie">It is a tie!</string>
+    <string name="result_congrats_player">Congrats %1$s!</string>
+    <string name="score_p1_wins">Player 1 Wins: %1$d</string>
+    <string name="score_p2_wins">Player 2 Wins: %1$d</string>
+    <string name="score_ties_count">Ties: %1$d</string>
+
+    <!-- Legacy / generic -->
     <string name="result_wins">%1$s wins!</string>
     <string name="result_tie">It is a tie!</string>
     <string name="label_wins">wins</string>
@@ -35,9 +55,6 @@
     <string name="cd_app_logo">Tic-Tac-Toe logo</string>
     <string name="cd_back_button">Back</string>
     <string name="cd_board_cell">Board cell</string>
-
-    <!-- Stage 2 stubs -->
-    <string name="stub_game_screen_coming">Game Screen Coming</string>
 
     <!-- Fun default player names -->
     <string-array name="fun_player_names">

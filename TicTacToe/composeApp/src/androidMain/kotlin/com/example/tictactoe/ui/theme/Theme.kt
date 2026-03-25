@@ -13,12 +13,12 @@ object TicTacToeThemeConfig {
      * Light color scheme used by the application.
      */
     val lightColors = lightColorScheme(
-        primary = TicTacToeColors.NavyPrimary,
+        primary = TicTacToeColors.TopBarPurple,
         onPrimary = TicTacToeColors.OnPrimary,
-        secondary = TicTacToeColors.AmberSecondary,
+        secondary = TicTacToeColors.NavyPrimary,
         tertiary = TicTacToeColors.TealTertiary,
-        background = TicTacToeColors.Background,
-        surface = TicTacToeColors.OffWhiteSurface,
+        background = TicTacToeColors.GameBoardBackground,
+        surface = TicTacToeColors.GameBoardBackground,
         onSurface = TicTacToeColors.OnSurface
     )
 }

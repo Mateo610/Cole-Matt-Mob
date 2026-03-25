@@ -1,5 +1,6 @@
 package com.example.tictactoe.screens
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -38,6 +39,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringArrayResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
@@ -48,17 +51,18 @@ import androidx.compose.ui.unit.sp
 import com.example.tictactoe.R
 import com.example.tictactoe.model.PlayerConfig
 import com.example.tictactoe.model.PlayerType
+import com.example.tictactoe.ui.theme.TicTacToeColors
 import kotlinx.coroutines.launch
 
-// ── Exact colors extracted from the screenshot ─────────────────────────────
-private val BgPurple     = Color(0xFF7B6EC8)   // medium purple background
-private val LogoCircle   = Color(0xFF5A4BA0)   // darker circle behind XO text
-private val FieldBg      = Color(0xFFEAE6F8)   // light lavender for all fields
-private val FieldText    = Color(0xFF4A4070)   // dark purple text inside fields
-private val FieldLabel   = Color(0xFF9B93C4)   // muted purple floating label
-private val StartBtnBg   = Color(0xFFFFFFFF)   // white pill button
-private val StartBtnText = Color(0xFF7B6EC8)   // purple text on Start button
-
+/**
+ * First screen: player setup (names and types) and navigation into a new match.
+ *
+ * There is no top app bar on this route; the scaffold omits it by design.
+ *
+ * @param snackbarHostState Host used to show validation errors (empty names).
+ * @param onStartGame Invoked with both player configs when input is valid.
+ * @param modifier Optional modifier for the root of this screen.
+ */
 @Composable
 fun WelcomeScreen(
     snackbarHostState: SnackbarHostState,
@@ -78,7 +82,7 @@ fun WelcomeScreen(
     Box(
         modifier = modifier
             .fillMaxSize()
-            .background(BgPurple)
+            .background(TicTacToeColors.WelcomeBackground)
     ) {
         Column(
             modifier = Modifier
@@ -89,37 +93,27 @@ fun WelcomeScreen(
         ) {
             Spacer(modifier = Modifier.height(56.dp))
 
-            // ── XO Logo: dark purple circle, white text only ──────────────
             Box(
                 modifier = Modifier
                     .size(90.dp)
                     .clip(CircleShape)
-                    .background(LogoCircle),
+                    .background(TicTacToeColors.WelcomeLogoCircle),
                 contentAlignment = Alignment.Center
             ) {
-                Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                    Text(
-                        text = "XO",
-                        color = Color.White,
-                        fontSize = 24.sp,
-                        fontWeight = FontWeight.Bold,
-                        letterSpacing = 3.sp
-                    )
-                    Text(
-                        text = "OX",
-                        color = Color.White,
-                        fontSize = 24.sp,
-                        fontWeight = FontWeight.Bold,
-                        letterSpacing = 3.sp
-                    )
-                }
+                Image(
+                    painter = painterResource(id = R.drawable.ic_tictactoe_logo),
+                    contentDescription = stringResource(id = R.string.cd_app_logo),
+                    modifier = Modifier
+                        .size(72.dp)
+                        .padding(8.dp),
+                    contentScale = ContentScale.Fit
+                )
             }
 
             Spacer(modifier = Modifier.height(24.dp))
 
-            // ── "Welcome to Tic-Tac-Toe!" ─────────────────────────────────
             Text(
-                text = "Welcome to\nTic-Tac-Toe!",
+                text = stringResource(id = R.string.welcome_title),
                 color = Color.White,
                 fontSize = 38.sp,
                 fontWeight = FontWeight.Bold,
@@ -129,34 +123,32 @@ fun WelcomeScreen(
 
             Spacer(modifier = Modifier.height(52.dp))
 
-            // ── Two player columns side-by-side ───────────────────────────
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.spacedBy(16.dp)
             ) {
                 PlayerColumn(
-                    label = "Player 1",
+                    label = stringResource(id = R.string.label_player_one),
                     name = player1Name,
                     onNameChange = { player1Name = it },
                     playerType = player1Type,
                     onTypeChange = { player1Type = it },
-                    namePlaceholder = "Player 1 Name",
+                    namePlaceholder = stringResource(id = R.string.hint_player_one_name),
                     modifier = Modifier.weight(1f)
                 )
                 PlayerColumn(
-                    label = "Player 2",
+                    label = stringResource(id = R.string.label_player_two),
                     name = player2Name,
                     onNameChange = { player2Name = it },
                     playerType = player2Type,
                     onTypeChange = { player2Type = it },
-                    namePlaceholder = "Player 2 Name",
+                    namePlaceholder = stringResource(id = R.string.hint_player_two_name),
                     modifier = Modifier.weight(1f)
                 )
             }
 
             Spacer(modifier = Modifier.height(44.dp))
 
-            // ── Start! button ─────────────────────────────────────────────
             Button(
                 onClick = {
                     if (player1Name.isBlank() || player2Name.isBlank()) {
@@ -173,13 +165,13 @@ fun WelcomeScreen(
                     .height(52.dp),
                 shape = RoundedCornerShape(50.dp),
                 colors = ButtonDefaults.buttonColors(
-                    containerColor = StartBtnBg,
-                    contentColor = StartBtnText
+                    containerColor = Color.White,
+                    contentColor = TicTacToeColors.WelcomeStartButtonLabel
                 ),
                 elevation = ButtonDefaults.buttonElevation(defaultElevation = 0.dp)
             ) {
                 Text(
-                    text = "Start!",
+                    text = stringResource(id = R.string.btn_start_game),
                     fontSize = 20.sp,
                     fontWeight = FontWeight.SemiBold
                 )
@@ -191,8 +183,7 @@ fun WelcomeScreen(
 }
 
 /**
- * One player column: white label, pill dropdown, rounded name field.
- * No card background — fields float directly on the purple screen.
+ * One player column: label, type dropdown, and name field styled for the welcome screen.
  */
 @Composable
 private fun PlayerColumn(
@@ -209,7 +200,6 @@ private fun PlayerColumn(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
-        // White heading label
         Text(
             text = label,
             color = Color.White,
@@ -217,14 +207,12 @@ private fun PlayerColumn(
             fontWeight = FontWeight.SemiBold
         )
 
-        // Pill-shaped dropdown
         PlayerTypeDropdown(
             selectedType = playerType,
             onTypeChange = onTypeChange,
             modifier = Modifier.fillMaxWidth()
         )
 
-        // Name text field — placeholder avoids the floating-label background artifact
         OutlinedTextField(
             value = name,
             onValueChange = onNameChange,
@@ -234,26 +222,33 @@ private fun PlayerColumn(
                 Text(
                     text = namePlaceholder,
                     fontSize = 13.sp,
-                    color = FieldLabel
+                    color = TicTacToeColors.WelcomeFieldLabel
                 )
             },
             textStyle = TextStyle(
-                color = FieldText,
+                color = TicTacToeColors.WelcomeFieldText,
                 fontSize = 14.sp,
                 fontWeight = FontWeight.Medium
             ),
             shape = RoundedCornerShape(12.dp),
             colors = OutlinedTextFieldDefaults.colors(
-                focusedContainerColor = FieldBg,
-                unfocusedContainerColor = FieldBg,
+                focusedContainerColor = TicTacToeColors.WelcomeFieldBackground,
+                unfocusedContainerColor = TicTacToeColors.WelcomeFieldBackground,
                 focusedBorderColor = Color.Transparent,
                 unfocusedBorderColor = Color.Transparent,
-                cursorColor = FieldText
+                cursorColor = TicTacToeColors.WelcomeFieldText
             )
         )
     }
 }
 
+/**
+ * Pill-shaped dropdown listing all [PlayerType] options.
+ *
+ * @param selectedType Currently selected type for this player.
+ * @param onTypeChange Called when the user picks a new type.
+ * @param modifier Optional modifier for the menu anchor.
+ */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PlayerTypeDropdown(
@@ -278,21 +273,21 @@ fun PlayerTypeDropdown(
             modifier = Modifier
                 .menuAnchor()
                 .fillMaxWidth(),
-            shape = RoundedCornerShape(50.dp),   // pill shape
+            shape = RoundedCornerShape(50.dp),
             textStyle = TextStyle(
-                color = FieldText,
+                color = TicTacToeColors.WelcomeFieldText,
                 fontSize = 14.sp,
                 fontWeight = FontWeight.Medium
             ),
             colors = TextFieldDefaults.colors(
-                focusedContainerColor = FieldBg,
-                unfocusedContainerColor = FieldBg,
+                focusedContainerColor = TicTacToeColors.WelcomeFieldBackground,
+                unfocusedContainerColor = TicTacToeColors.WelcomeFieldBackground,
                 focusedIndicatorColor = Color.Transparent,
                 unfocusedIndicatorColor = Color.Transparent,
-                focusedTextColor = FieldText,
-                unfocusedTextColor = FieldText,
-                focusedTrailingIconColor = FieldText,
-                unfocusedTrailingIconColor = FieldText
+                focusedTextColor = TicTacToeColors.WelcomeFieldText,
+                unfocusedTextColor = TicTacToeColors.WelcomeFieldText,
+                focusedTrailingIconColor = TicTacToeColors.WelcomeFieldText,
+                unfocusedTrailingIconColor = TicTacToeColors.WelcomeFieldText
             ),
             trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded) }
         )
@@ -316,10 +311,10 @@ fun PlayerTypeDropdown(
 
 @Composable
 private fun playerTypeLabel(type: PlayerType): String = when (type) {
-    PlayerType.HUMAN     -> stringResource(id = R.string.type_human)
-    PlayerType.EASY_AI   -> stringResource(id = R.string.type_easy_ai)
+    PlayerType.HUMAN -> stringResource(id = R.string.type_human)
+    PlayerType.EASY_AI -> stringResource(id = R.string.type_easy_ai)
     PlayerType.MEDIUM_AI -> stringResource(id = R.string.type_medium_ai)
-    PlayerType.HARD_AI   -> stringResource(id = R.string.type_hard_ai)
+    PlayerType.HARD_AI -> stringResource(id = R.string.type_hard_ai)
 }
 
 private fun pickTwoDifferent(options: List<String>): Pair<String, String> {

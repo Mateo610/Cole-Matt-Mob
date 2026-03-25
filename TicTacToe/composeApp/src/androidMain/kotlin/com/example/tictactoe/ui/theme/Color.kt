@@ -8,9 +8,64 @@ import androidx.compose.ui.graphics.Color
 object TicTacToeColors {
 
     /**
-     * Primary navy color used for app bars and key surfaces.
+     * Primary purple for app bars and branded surfaces (solution APK palette).
      */
-    val NavyPrimary: Color = Color(0xFF0D1B2A)
+    val NavyPrimary: Color = Color(0xFF6B5B95)
+
+    /**
+     * Darker purple for top app bar contrast.
+     */
+    val TopBarPurple: Color = Color(0xFF5A4B8A)
+
+    /**
+     * Welcome / marketing background purple.
+     */
+    val WelcomeBackground: Color = Color(0xFF7B6EC8)
+
+    /**
+     * Circle behind the welcome logo.
+     */
+    val WelcomeLogoCircle: Color = Color(0xFF5A4BA0)
+
+    /**
+     * Lavender field background for inputs and dropdowns on welcome.
+     */
+    val WelcomeFieldBackground: Color = Color(0xFFEAE6F8)
+
+    /**
+     * Text inside welcome fields.
+     */
+    val WelcomeFieldText: Color = Color(0xFF4A4070)
+
+    /**
+     * Muted label on welcome fields.
+     */
+    val WelcomeFieldLabel: Color = Color(0xFF9B93C4)
+
+    /**
+     * Start button text (matches branded purple).
+     */
+    val WelcomeStartButtonLabel: Color = Color(0xFF7B6EC8)
+
+    /**
+     * Main play area behind the grid (light lavender).
+     */
+    val GameBoardBackground: Color = Color(0xFFE8E0F5)
+
+    /**
+     * Grid line color on the game board.
+     */
+    val GridLinePurple: Color = Color(0xFF5A4BA0)
+
+    /**
+     * Background for a cell that contains X or O.
+     */
+    val FilledCellPurple: Color = Color(0xFF7B6EC8)
+
+    /**
+     * Turn banner text on the game screen.
+     */
+    val OnGameBoardText: Color = Color(0xFF2D2640)
 
     /**
      * Secondary amber accent color used for highlights.
