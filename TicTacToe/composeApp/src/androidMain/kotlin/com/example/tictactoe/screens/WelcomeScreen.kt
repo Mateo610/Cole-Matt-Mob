@@ -4,6 +4,7 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -79,23 +80,34 @@ fun WelcomeScreen(
     val coroutineScope = rememberCoroutineScope()
     val nameEmptyError = stringResource(id = R.string.error_name_empty)
 
-    Box(
+    BoxWithConstraints(
         modifier = modifier
             .fillMaxSize()
             .background(TicTacToeColors.WelcomeBackground)
     ) {
+        val isLandscape = maxWidth > maxHeight
+        val topSpacer = if (isLandscape) 8.dp else 56.dp
+        val logoSize = if (isLandscape) 58.dp else 90.dp
+        val logoInnerSize = if (isLandscape) 46.dp else 72.dp
+        val titleSize = if (isLandscape) 22.sp else 38.sp
+        val titleLineHeight = if (isLandscape) 28.sp else 46.sp
+        val prePlayersSpacer = if (isLandscape) 10.dp else 52.dp
+        val preButtonSpacer = if (isLandscape) 6.dp else 44.dp
+        val postButtonSpacer = if (isLandscape) 12.dp else 48.dp
+
         Column(
             modifier = Modifier
                 .fillMaxSize()
                 .verticalScroll(rememberScrollState())
+                .padding(top = 8.dp, bottom = 8.dp)
                 .padding(horizontal = 28.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Spacer(modifier = Modifier.height(56.dp))
+            Spacer(modifier = Modifier.height(topSpacer))
 
             Box(
                 modifier = Modifier
-                    .size(90.dp)
+                    .size(logoSize)
                     .clip(CircleShape)
                     .background(TicTacToeColors.WelcomeLogoCircle),
                 contentAlignment = Alignment.Center
@@ -104,7 +116,7 @@ fun WelcomeScreen(
                     painter = painterResource(id = R.drawable.ic_tictactoe_logo),
                     contentDescription = stringResource(id = R.string.cd_app_logo),
                     modifier = Modifier
-                        .size(72.dp)
+                        .size(logoInnerSize)
                         .padding(8.dp),
                     contentScale = ContentScale.Fit
                 )
@@ -115,13 +127,13 @@ fun WelcomeScreen(
             Text(
                 text = stringResource(id = R.string.welcome_title),
                 color = Color.White,
-                fontSize = 38.sp,
+                fontSize = titleSize,
                 fontWeight = FontWeight.Bold,
                 textAlign = TextAlign.Center,
-                lineHeight = 46.sp
+                lineHeight = titleLineHeight
             )
 
-            Spacer(modifier = Modifier.height(52.dp))
+            Spacer(modifier = Modifier.height(prePlayersSpacer))
 
             Row(
                 modifier = Modifier.fillMaxWidth(),
@@ -147,7 +159,7 @@ fun WelcomeScreen(
                 )
             }
 
-            Spacer(modifier = Modifier.height(44.dp))
+            Spacer(modifier = Modifier.height(preButtonSpacer))
 
             Button(
                 onClick = {
@@ -177,7 +189,7 @@ fun WelcomeScreen(
                 )
             }
 
-            Spacer(modifier = Modifier.height(48.dp))
+            Spacer(modifier = Modifier.height(postButtonSpacer))
         }
     }
 }

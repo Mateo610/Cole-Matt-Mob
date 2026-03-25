@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
@@ -181,8 +182,11 @@ fun GameScreen(
         modifier = modifier
             .fillMaxSize()
             .background(lavender)
+            .padding(top = 8.dp, bottom = 8.dp)
     ) {
         val landscape = maxWidth > maxHeight
+        val maxBoardSize = maxHeight - 72.dp
+        val landscapeBoardSize = minOf(maxWidth * 0.72f, maxHeight - 28.dp)
         val turnText = if (currentPiece() == PlayerPiece.X) {
             stringResource(id = R.string.game_turn_play_x, currentPlayerName())
         } else {
@@ -193,16 +197,16 @@ fun GameScreen(
             Row(
                 modifier = Modifier
                     .fillMaxSize()
-                    .padding(16.dp),
+                    .padding(12.dp),
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.SpaceEvenly
             ) {
                 TurnBanner(
                     text = turnText,
                     modifier = Modifier
-                        .weight(0.35f)
-                        .fillMaxHeight()
-                        .padding(end = 8.dp)
+                        .weight(1f)
+                        .widthIn(max = 220.dp)
+                        .padding(end = 12.dp)
                 )
                 BoardPanel(
                     board = board,
@@ -211,8 +215,7 @@ fun GameScreen(
                     filledCell = filledCell,
                     onCellClick = ::onCellClicked,
                     modifier = Modifier
-                        .weight(0.65f)
-                        .widthIn(max = maxHeight - 32.dp)
+                        .size(landscapeBoardSize)
                         .aspectRatio(1f)
                 )
             }
@@ -238,6 +241,7 @@ fun GameScreen(
                     onCellClick = ::onCellClicked,
                     modifier = Modifier
                         .fillMaxWidth(0.92f)
+                        .widthIn(max = maxBoardSize)
                         .aspectRatio(1f)
                 )
             }
