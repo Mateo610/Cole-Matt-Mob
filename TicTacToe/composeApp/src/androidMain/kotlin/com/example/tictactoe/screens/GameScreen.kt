@@ -1,5 +1,8 @@
 package com.example.tictactoe.screens
 
+import androidx.compose.animation.core.Animatable
+import androidx.compose.animation.core.EaseOut
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -8,13 +11,11 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.widthIn
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -50,19 +51,12 @@ import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.delay
+import kotlin.math.cos
+import kotlin.math.sin
+import kotlin.math.PI
 
 private const val AI_MOVE_DELAY_MS: Long = 650L
 
-/**
- * Main play screen: board, turn indicator, human moves, and AI moves with delay.
- *
- * @param player1Config First player (always [PlayerPiece.X]).
- * @param player2Config Second player (always [PlayerPiece.O]).
- * @param snackbarHostState Host for error snackbars.
- * @param navBackStackEntry Entry for this destination; used to read [AppRoutes.SAVED_STATE_NEW_ROUND].
- * @param onGameOver Invoked when the round ends with outcome and running score totals.
- * @param modifier Optional modifier for the root of this screen.
- */
 @Composable
 fun GameScreen(
     player1Config: PlayerConfig,
@@ -121,11 +115,7 @@ fun GameScreen(
         when {
             winner != null -> {
                 if (winner == PlayerPiece.X) p1Wins++ else p2Wins++
-                val outcome = if (winner == PlayerPiece.X) {
-                    RoundOutcome.PLAYER1_WIN
-                } else {
-                    RoundOutcome.PLAYER2_WIN
-                }
+                val outcome = if (winner == PlayerPiece.X) RoundOutcome.PLAYER1_WIN else RoundOutcome.PLAYER2_WIN
                 onGameOver(outcome, p1Wins, p2Wins, ties, newBoard)
             }
             newBoard.isFull() -> {
@@ -184,74 +174,41 @@ fun GameScreen(
             .background(lavender)
             .padding(top = 8.dp, bottom = 8.dp)
     ) {
-        val landscape = maxWidth > maxHeight
-        val maxBoardSize = maxHeight - 72.dp
-        val landscapeBoardSize = minOf(maxWidth * 0.72f, maxHeight - 28.dp)
+        val maxBoardSize = (maxHeight - 96.dp).coerceAtLeast(0.dp)
+        val boardSize = minOf(maxWidth * 0.92f, maxBoardSize)
+
         val turnText = if (currentPiece() == PlayerPiece.X) {
             stringResource(id = R.string.game_turn_play_x, currentPlayerName())
         } else {
             stringResource(id = R.string.game_turn_play_o, currentPlayerName())
         }
 
-        if (landscape) {
-            Row(
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(16.dp),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center
+        ) {
+            TurnBanner(
+                text = turnText,
                 modifier = Modifier
-                    .fillMaxSize()
-                    .padding(12.dp),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.SpaceEvenly
-            ) {
-                TurnBanner(
-                    text = turnText,
-                    modifier = Modifier
-                        .weight(1f)
-                        .widthIn(max = 220.dp)
-                        .padding(end = 12.dp)
-                )
-                BoardPanel(
-                    board = board,
-                    lineColor = lineColor,
-                    lavender = lavender,
-                    filledCell = filledCell,
-                    onCellClick = ::onCellClicked,
-                    modifier = Modifier
-                        .size(landscapeBoardSize)
-                        .aspectRatio(1f)
-                )
-            }
-        } else {
-            Column(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(16.dp),
-                horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.Center
-            ) {
-                TurnBanner(
-                    text = turnText,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(bottom = 24.dp)
-                )
-                BoardPanel(
-                    board = board,
-                    lineColor = lineColor,
-                    lavender = lavender,
-                    filledCell = filledCell,
-                    onCellClick = ::onCellClicked,
-                    modifier = Modifier
-                        .fillMaxWidth(0.92f)
-                        .widthIn(max = maxBoardSize)
-                        .aspectRatio(1f)
-                )
-            }
+                    .fillMaxWidth()
+                    .padding(bottom = 12.dp)
+            )
+
+            BoardPanel(
+                board = board,
+                lineColor = lineColor,
+                lavender = lavender,
+                filledCell = filledCell,
+                onCellClick = ::onCellClicked,
+                modifier = Modifier.size(boardSize)
+            )
         }
     }
 }
 
-/**
- * Shows whose turn it is using the current player name and piece (X or O).
- */
 @Composable
 private fun TurnBanner(text: String, modifier: Modifier = Modifier) {
     Text(
@@ -264,9 +221,6 @@ private fun TurnBanner(text: String, modifier: Modifier = Modifier) {
     )
 }
 
-/**
- * Renders the 3×3 grid with line-only dividers and tappable cells.
- */
 @Composable
 private fun BoardPanel(
     board: Board,
@@ -306,12 +260,7 @@ private fun BoardPanel(
             val thirdH = h / 3f
             val stroke = 6.dp.toPx()
             fun line(a: Offset, b: Offset) {
-                drawLine(
-                    color = lineColor,
-                    start = a,
-                    end = b,
-                    strokeWidth = stroke
-                )
+                drawLine(color = lineColor, start = a, end = b, strokeWidth = stroke)
             }
             line(Offset(thirdW, 0f), Offset(thirdW, h))
             line(Offset(2 * thirdW, 0f), Offset(2 * thirdW, h))
@@ -321,9 +270,6 @@ private fun BoardPanel(
     }
 }
 
-/**
- * One cell: empty blends with [lavender]; occupied uses [filledCell] and a white mark.
- */
 @Composable
 private fun BoardCellView(
     piece: PlayerPiece?,
@@ -333,6 +279,20 @@ private fun BoardCellView(
     modifier: Modifier = Modifier
 ) {
     val bg = if (piece == null) lavender else filledCell
+
+    // Animates from 0 → 1 when a piece is placed, driving sparkle spread and fade
+    val sparkleProgress = remember { Animatable(0f) }
+
+    LaunchedEffect(piece) {
+        if (piece != null) {
+            sparkleProgress.snapTo(0f)
+            sparkleProgress.animateTo(
+                targetValue = 1f,
+                animationSpec = tween(durationMillis = 650, easing = EaseOut)
+            )
+        }
+    }
+
     Box(
         modifier = modifier
             .background(bg)
@@ -346,6 +306,52 @@ private fun BoardCellView(
                 fontSize = 36.sp,
                 fontWeight = FontWeight.Bold
             )
+
+            // Sparkle overlay: radiating rays that spread out and fade
+            val progress = sparkleProgress.value
+            if (progress < 1f) {
+                Canvas(modifier = Modifier.fillMaxSize()) {
+                    val cx = size.width / 2f
+                    val cy = size.height / 2f
+                    val maxRadius = size.minDimension * 0.45f
+                    val alpha = (1f - progress).coerceIn(0f, 1f)
+                    val numRays = 8
+
+                    // Primary rays
+                    for (i in 0 until numRays) {
+                        val angle = (2.0 * PI * i / numRays).toFloat()
+                        val innerR = maxRadius * 0.15f + maxRadius * 0.2f * progress
+                        val outerR = maxRadius * 0.3f + maxRadius * 0.5f * progress
+
+                        drawLine(
+                            color = Color.White.copy(alpha = alpha),
+                            start = Offset(cx + innerR * cos(angle), cy + innerR * sin(angle)),
+                            end = Offset(cx + outerR * cos(angle), cy + outerR * sin(angle)),
+                            strokeWidth = 3.dp.toPx()
+                        )
+
+                        // Dot at tip of each primary ray
+                        drawCircle(
+                            color = Color.White.copy(alpha = alpha * 0.8f),
+                            radius = 3.dp.toPx(),
+                            center = Offset(cx + outerR * cos(angle), cy + outerR * sin(angle))
+                        )
+                    }
+
+                    // Secondary shorter rays between primary rays
+                    for (i in 0 until numRays) {
+                        val angle = (2.0 * PI * i / numRays + PI / numRays).toFloat()
+                        val outerR = maxRadius * 0.15f + maxRadius * 0.25f * progress
+
+                        drawLine(
+                            color = Color.White.copy(alpha = alpha * 0.6f),
+                            start = Offset(cx + maxRadius * 0.1f * cos(angle), cy + maxRadius * 0.1f * sin(angle)),
+                            end = Offset(cx + outerR * cos(angle), cy + outerR * sin(angle)),
+                            strokeWidth = 2.dp.toPx()
+                        )
+                    }
+                }
+            }
         }
     }
 }
